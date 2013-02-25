@@ -1,0 +1,80 @@
+===============
+ WHAT
+===============
+This Nagios Plugin gets hardware alerts from a FSC Primergy server through
+SNMP.
+ - environment (eg temperature, fans, case opening,...)
+ - powersupply
+ - massstorage (eg raid devices)
+ - systemboard 
+ - deployment (don't know...)
+The FSC ServerView Agent must be installed and configured on the server.
+The check_serverview.py is a rewrite of the check_serverview plugin in python,
+which can also be found on www.nagiosexchange.org
+The maint advantages of this plugin over the original check_serverview is
+cleaner output and the ability to ignore certain subsystems.
+For example the 'deployment' subsystem kept generating warnings, probably
+because the server wasn't installed with the FSC ServerStart toolkit.
+
+===============
+ INSTALLATION
+===============
+For the check_serverview.py plugin to work, it needs some python libraries installed.
+
+1) check_serverview.py needs the following files in the same directory
+ * schau_utils.py: Python library for fast nagios-plugin creation
+ * schau_snmp.py: Python library for easy snmp1/2/3 access
+
+ 
+2) schau_snmp.py depends on the following libraries
+* PyCrypto
+    http://pycrypto.sourceforge.net
+    On CentOS with apt:
+    apt-get install python-crypto
+* PyASN1
+    http://pyasn1.sourceforge.net
+      wget http://heanet.dl.sourceforge.net/sourceforge/pyasn1/pyasn1-0.0.6a.tar.gz
+      tar -xzf pyasn1-0.0.6a.tar.gz
+      cd pyasn1-0.0.6a
+      python setup install
+* pysnmp v4.1 (with snmpv3 support)
+    http://pysnmp.sourceforge.net
+      wget http://heanet.dl.sourceforge.net/sourceforge/pysnmp/pysnmp-4.1.7a.tar.gz
+      tar -xzf pysnmp-4.1.7a.tar.gz
+      cd pysnmp-4.1.7a
+      python setup install
+      
+===============
+ OPTIMIZATION
+===============
+Execution can be speed up by enabling python bytecode compilation. This is
+done by granting the user running check_serverview.py rights to create
+(or write to an existing) check_serverview.pyc file in the same directory.
+e.g.
+cd /usr/lib/nagios/plugins
+touch check_serverview.pyc
+chmod 755 check_serverview.pyc
+chown nagios:nagios check_serverview.pyc
+# repeat this for every .py plugin you have
+
+===============
+ CONTACT
+===============
+stijn.gruwier@notforadsgmail.com
+Remove the *notforads* substring from the address.
+
+===============
+ LICENSE
+===============
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
