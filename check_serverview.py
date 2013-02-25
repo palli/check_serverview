@@ -27,6 +27,7 @@ from schau_snmp import SnmpClient, SnmpError
 opties = {
     'host' : {'char': 'H', 'type':'string'},
     'protocol' : {'char': 'p', 'type':'int', 'default':1},
+    'port' : {'char': 'P', 'type':'int', 'default':161},
     'community' : {'char': 'C', 'type':'string', 'default':'public'},
     'ignore' : {'char': 'i', 'type':'string', 'default':''}
     }
@@ -52,7 +53,7 @@ Copyright (c) 2007 Gruwier Stijn''',
 
 # Commandline usage
 'use' :
-'''Usage:	check_serverview.py -H host [-C community] [-p protocol]
+'''Usage:	check_serverview.py -H host [-C community] [-p protocol] [-P port]
 		[-i|--ignore=subsystem1[,subsystem2[,...]]]
 	check_serverview.py (-h|--help)
 	check_serverview.py (-V|--version)''', 
@@ -62,6 +63,8 @@ Copyright (c) 2007 Gruwier Stijn''',
 '''check_serverview.py
  -H, --host=hostname
     Connect to hostname
+ -P, --port
+    Connect using this udp port (default 161)
  -p, --protocol=[1|2|3]
     Snmp version to use (default 1)
     Affects the community option
@@ -101,6 +104,7 @@ def serverview_function(options):
     community = options['community']
     protocol = int(options['protocol'])
     timeout = options['timeout']
+    port = options['port']
     ignore = options['ignore']
     if not host:
         return('UNKNOWN', '-H, --host is a required argument')
@@ -111,10 +115,10 @@ def serverview_function(options):
     if ignore:
         ignorelist = ignore.lower().split(',')
     if protocol in (1,2):
-        snmp = SnmpClient(host, protocol, community)
+        snmp = SnmpClient(host, protocol, community,port=port)
     else:
         user, key = community.split(':')
-        snmp = SnmpClient(host, protocol, community=community)
+        snmp = SnmpClient(host, protocol, community=community,port=port)
     problem_list = []
     problem_string, subsystems_string = '', ''
     try:
